@@ -1,4 +1,4 @@
-FROM golang:alpine
+FROM mcr.microsoft.com/dotnet/core/aspnet:3.1-buster-slim
 RUN mkdir /app
 RUN mkdir /data
 RUN rm -f /etc/localtime \
