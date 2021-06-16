@@ -2,8 +2,9 @@ package main
 
 import (
 	"fmt"
-	"net/http"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"log"
+	"net/http"
 	"os"
 )
 
@@ -36,10 +37,19 @@ func check1(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	http.HandleFunc("/", index)
-	http.HandleFunc("/health_check", check)
-	http.HandleFunc("/api/v1", check1)
+
+	server := http.NewServeMux() // create a new mux server
+	server.Handle("/metrics", promhttp.Handler()) // register a new handler for the /metrics endpoint
+	server.HandleFunc("/", index)
+	server.HandleFunc("/health_check", check)
+	server.HandleFunc("/api/v1", check1)
+
+
 
 	fmt.Println("Server starting...")
-	http.ListenAndServe(":3000", nil)
+	//http.ListenAndServe(":3000", server)
+	log.Fatal(http.ListenAndServe(":3000", server))
+
+
+
 }
